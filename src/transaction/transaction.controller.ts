@@ -1,19 +1,7 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
 import { UserGuard } from 'src/user/guard/user.guard';
-import { GetUser } from 'src/user/decorator/user.decorator';
-import { UserDocument } from 'src/user/schemas/user.schema';
 
 @UseGuards(UserGuard)
 @Controller('transaction')
@@ -25,26 +13,13 @@ export class TransactionController {
     return this.transactionService.create(createTransactionDto);
   }
 
-  @Get()
-  findAll() {
-    return this.transactionService.findAll();
+  @Get('receive')
+  getReceivedTransaction(@Query('account') account: string) {
+    return this.transactionService.inflow(account);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.transactionService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateTransactionDto: UpdateTransactionDto,
-  ) {
-    return this.transactionService.update(+id, updateTransactionDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.transactionService.remove(+id);
+  @Get('sent')
+  getSentTransaction(@Query('account') account: string) {
+    return this.transactionService.outflow(account);
   }
 }

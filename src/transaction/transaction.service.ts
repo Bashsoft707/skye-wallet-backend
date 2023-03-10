@@ -2,11 +2,8 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { AccountService } from 'src/account/account.service';
-import { UserDocument } from 'src/user/schemas/user.schema';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
-import { UpdateTransactionDto } from './dto/update-transaction.dto';
-import { Transaction } from './entities/transaction.entity';
-import { TransactionDocument } from './schemas/transaction.schema';
+import { Transaction, TransactionDocument } from './schemas/transaction.schema';
 
 @Injectable()
 export class TransactionService {
@@ -23,11 +20,6 @@ export class TransactionService {
       const senderAccount = await this.accountService.findAccount(sender);
       const receiverAccount = await this.accountService.findAccount(receiver);
 
-      console.log('receiver', receiver);
-
-      if (!receiver) {
-        throw new Error('Receiver caanot be found');
-      }
       const transaction = await this.transactionModel.create({
         sender,
         receiver,
@@ -51,19 +43,39 @@ export class TransactionService {
     }
   }
 
-  findAll() {
-    return `This action returns all transaction`;
+  async outflow(account: string) {
+    try {
+      const transaction = await this.transactionModel.find({
+        sender: account,
+      });
+
+      if (transaction.length === 0) {
+        throw new BadRequestException(
+          'You dont have any outflow transaction on this account',
+        );
+      }
+
+      return transaction;
+    } catch (error) {
+      throw new BadRequestException();
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
-  }
+  async inflow(account: string) {
+    try {
+      const transaction = await this.transactionModel.find({
+        receiver: account,
+      });
 
-  update(id: number, updateTransactionDto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
-  }
+      if (transaction.length === 0) {
+        throw new BadRequestException(
+          'You dont have any inflow transaction on this account',
+        );
+      }
 
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+      return transaction;
+    } catch (error) {
+      throw new BadRequestException();
+    }
   }
 }

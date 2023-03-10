@@ -4,11 +4,9 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { profile } from 'console';
 import { randomBytes } from 'crypto';
 import { Model } from 'mongoose';
 import { UserDocument } from 'src/user/schemas/user.schema';
-import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account, AccountDocument } from './schemas/account.schema';
 
 @Injectable()
@@ -92,9 +90,7 @@ export class AccountService {
       return this.accountModel.findByIdAndUpdate(
         id,
         {
-          data: {
-            balance: account.balance + amount,
-          },
+          balance: account.balance + amount,
         },
         {
           new: true,
@@ -112,9 +108,7 @@ export class AccountService {
       return this.accountModel.findByIdAndUpdate(
         id,
         {
-          data: {
-            balance: account.balance - amount,
-          },
+          balance: account.balance - amount,
         },
         {
           new: true,

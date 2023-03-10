@@ -1,8 +1,21 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+} from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UpdateTransactionDto } from './dto/update-transaction.dto';
+import { UserGuard } from 'src/user/guard/user.guard';
+import { GetUser } from 'src/user/decorator/user.decorator';
+import { UserDocument } from 'src/user/schemas/user.schema';
 
+@UseGuards(UserGuard)
 @Controller('transaction')
 export class TransactionController {
   constructor(private readonly transactionService: TransactionService) {}
@@ -23,7 +36,10 @@ export class TransactionController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateTransactionDto: UpdateTransactionDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateTransactionDto: UpdateTransactionDto,
+  ) {
     return this.transactionService.update(+id, updateTransactionDto);
   }
 

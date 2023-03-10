@@ -9,24 +9,36 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
+import { GetUser } from 'src/user/decorator/user.decorator';
 import { UserGuard } from 'src/user/guard/user.guard';
+import { UserDocument } from 'src/user/schemas/user.schema';
 import { AccountService } from './account.service';
 import { CreateAccountDto } from './dto/create-account.dto';
 import { UpdateAccountDto } from './dto/update-account.dto';
 
-@Controller(':userId/account')
+@UseGuards(UserGuard)
+@Controller('account')
 export class AccountController {
   constructor(private readonly accountService: AccountService) {}
 
   @Post()
-  create(@Param('userId') userId: string) {
-    return this.accountService.create(userId);
+  create(@GetUser() user: UserDocument) {
+    return this.accountService.create(user);
   }
 
-  @UseGuards(UserGuard)
   @Get()
-  findAll(@Query('paymentId') paymentId: string) {
-    return this.accountService.findAll(paymentId);
+  findAll() {
+    return this.accountService.findAll();
+  }
+
+  @Get('pay')
+  findAccount(@Query('paymentId') paymentId: string) {
+    return this.accountService.findAccount(paymentId);
+  }
+
+  @Get('user')
+  userAccount(@GetUser() user: UserDocument) {
+    return this.accountService.findUserAccount(user);
   }
 
   @Get(':id')
@@ -34,10 +46,10 @@ export class AccountController {
     return this.accountService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
-    return this.accountService.update(+id, updateAccountDto);
-  }
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateAccountDto: UpdateAccountDto) {
+  //   return this.accountService.update(id, updateAccountDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

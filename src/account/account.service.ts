@@ -4,8 +4,10 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
+import { profile } from 'console';
 import { randomBytes } from 'crypto';
 import { Model } from 'mongoose';
+import { UserDocument } from 'src/user/schemas/user.schema';
 import { UpdateAccountDto } from './dto/update-account.dto';
 import { Account, AccountDocument } from './schemas/account.schema';
 
@@ -15,17 +17,17 @@ export class AccountService {
     @InjectModel(Account.name) private accountModel: Model<AccountDocument>,
   ) {}
 
-  async create(userId: string) {
+  async create(user: UserDocument) {
     try {
       const accounts = await this.accountModel.find();
 
       const userAccounts = accounts.filter(
-        (account) => account.userId === userId,
+        (account) => account.profile.toString() === user._id?.toString(),
       );
 
       if (userAccounts.length < 5) {
         const account = await this.accountModel.create({
-          userId,
+          profile: user,
           paymentID: randomBytes(8).toString('hex').substring(0, 7),
           balance: 5000,
         });
@@ -39,8 +41,34 @@ export class AccountService {
     }
   }
 
-  findAll(paymentID: string) {
-    return this.accountModel.find({ paymentID });
+  findAll() {
+    return this.accountModel.find();
+  }
+
+  async findAccount(paymentID: string) {
+    try {
+      if (!paymentID) {
+        throw new BadRequestException('PaymentID not provided');
+      }
+
+      const account = await this.accountModel
+        .find({ paymentID })
+        .populate('profile');
+
+      if (account.length === 0) {
+        throw new NotFoundException('User not found');
+      }
+
+      return account;
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async findUserAccount(user: UserDocument) {
+    return this.accountModel
+      .find({ profile: user._id })
+      .populate('profile', '-password');
   }
 
   async findOne(id: string) {
@@ -57,8 +85,44 @@ export class AccountService {
     }
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  async credit(id: string, amount: number) {
+    try {
+      const account = await this.findOne(id);
+
+      return this.accountModel.findByIdAndUpdate(
+        id,
+        {
+          data: {
+            balance: account.balance + amount,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
+  }
+
+  async debit(id: string, amount: number) {
+    try {
+      const account = await this.findOne(id);
+
+      return this.accountModel.findByIdAndUpdate(
+        id,
+        {
+          data: {
+            balance: account.balance - amount,
+          },
+        },
+        {
+          new: true,
+        },
+      );
+    } catch (error) {
+      throw new BadRequestException(error.message);
+    }
   }
 
   async remove(id: string) {

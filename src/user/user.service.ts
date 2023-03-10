@@ -37,7 +37,7 @@ export class UserService {
       });
 
       // create account upon user signup
-      await this.accountService.create(user?.id);
+      await this.accountService.create(user);
 
       // generate token upon user signup
       const token = signToken(String(user.id));

@@ -1,6 +1,8 @@
 import {
   CanActivate,
   ExecutionContext,
+  forwardRef,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -8,9 +10,12 @@ import {
 import { retrieveTokenValue } from 'src/utils/jwt.utils';
 import { UserService } from '../user.service';
 
-@Injectable()
+
 export class UserGuard implements CanActivate {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    @Inject(forwardRef(() => UserService))
+    private readonly userService: UserService,
+  ) {}
 
   async canActivate(context: ExecutionContext) {
     const request = context.switchToHttp().getRequest();
@@ -36,8 +41,6 @@ export class UserGuard implements CanActivate {
     }
 
     const { id } = await retrieveTokenValue<{ id: string }>(token);
-
-    console.log(id);
 
     const user = await this.userService.findOne(id);
 

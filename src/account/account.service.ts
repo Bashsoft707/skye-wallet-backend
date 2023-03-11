@@ -40,7 +40,7 @@ export class AccountService {
   }
 
   findAll() {
-    return this.accountModel.find();
+    return this.accountModel.find().populate('profile', '-password');
   }
 
   async findAccount(paymentID: string) {
@@ -51,7 +51,7 @@ export class AccountService {
 
       const account = await this.accountModel
         .find({ paymentID })
-        .populate('profile');
+        .populate('profile', '-password');
 
       if (account.length === 0) {
         throw new NotFoundException('User not found');

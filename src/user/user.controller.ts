@@ -1,12 +1,9 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UserGuard } from './guard/user.guard';
+import { GetUser } from './decorator/user.decorator';
+import { UserDocument } from './schemas/user.schema';
 
 @Controller('user')
 export class UserController {
@@ -22,6 +19,12 @@ export class UserController {
     const { email, password } = createUserDto;
 
     return this.userService.signin(email, password);
+  }
+
+  @UseGuards(UserGuard)
+  @Get('me')
+  me(@GetUser() user: UserDocument) {
+    return user;
   }
 
   @Get()

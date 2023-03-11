@@ -57,7 +57,7 @@ export class TransactionService {
 
       return transaction;
     } catch (error) {
-      throw new BadRequestException();
+      throw new BadRequestException(error.message);
     }
   }
 
@@ -67,6 +67,8 @@ export class TransactionService {
         receiver: account,
       });
 
+      console.log('transactions', transaction);
+
       if (transaction.length === 0) {
         throw new BadRequestException(
           'You dont have any inflow transaction on this account',
@@ -75,7 +77,7 @@ export class TransactionService {
 
       return transaction;
     } catch (error) {
-      throw new BadRequestException();
+      throw new BadRequestException(error.message);
     }
   }
 }

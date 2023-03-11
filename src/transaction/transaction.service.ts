@@ -45,37 +45,39 @@ export class TransactionService {
 
   async outflow(account: string) {
     try {
-    const transaction = await this.transactionModel.find({
-      sender: account,
-    });
+      const transaction = await this.transactionModel.find({
+        sender: account,
+      });
 
-    if (transaction.length === 0) {
-      throw new BadRequestException(
-        'You dont have any outflow transaction on this account',
-      );
-    }
+      if (transaction.length === 0) {
+        throw new BadRequestException(
+          'You dont have any outflow transaction on this account',
+        );
+      }
 
-    return transaction;
+      return transaction;
     } catch (error) {
-      throw new BadRequestException();
+      throw new BadRequestException(error.message);
     }
   }
 
   async inflow(account: string) {
     try {
-    const transaction = await this.transactionModel.find({
-      receiver: account,
-    });
+      const transaction = await this.transactionModel.find({
+        receiver: account,
+      });
 
-    if (transaction.length === 0) {
-      throw new BadRequestException(
-        'You dont have any inflow transaction on this account',
-      );
-    }
+      console.log('transactions', transaction);
 
-    return transaction;
+      if (transaction.length === 0) {
+        throw new BadRequestException(
+          'You dont have any inflow transaction on this account',
+        );
+      }
+
+      return transaction;
     } catch (error) {
-      throw new BadRequestException();
+      throw new BadRequestException(error.message);
     }
   }
 }

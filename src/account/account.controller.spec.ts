@@ -47,7 +47,7 @@ describe('AccountController', () => {
 
   describe('create', () => {
     it('should create an account for the user', async () => {
-      jest.spyOn(controller, 'create').mockResolvedValueOnce(mockUser);
+      jest.spyOn(controller, 'create').mockResolvedValueOnce({ '_id': '123' });
 
       const result = await controller.create(mockUser);
 

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Test, TestingModule } from '@nestjs/testing';
 import { getModelToken } from '@nestjs/mongoose';
 import { UserService } from './user.service';
@@ -119,8 +120,8 @@ describe('UserService', () => {
       };
 
       jest.spyOn(userModel, 'findOne').mockResolvedValue(mockedUser);
-      // jest.spyOn(checkPassword, 'checkPassword').mockResolvedValue(true);
-      // jest.spyOn(signToken, 'signToken').mockReturnValue('testtoken');
+      jest.spyOn(checkPassword, 'checkPassword').mockResolvedValue(true);
+      jest.spyOn(signToken, 'signToken').mockReturnValue('testtoken');
 
       const result = await userService.signin(email, password);
 
@@ -145,26 +146,26 @@ describe('UserService', () => {
       expect(userModel.findOne).toBeCalledWith({ email });
     });
 
-    // it('should throw an exception if password is incorrect', async () => {
-    //   const email = 'test@example.com';
-    //   const password = 'testpassword';
+    it('should throw an exception if password is incorrect', async () => {
+      const email = 'test@example.com';
+      const password = 'testpassword';
 
-    //   const mockedUser = {
-    //     _id: '606e121e2498b17f07b1410d',
-    //     email,
-    //     password: await hashPassword('wrongpassword'),
-    //   };
+      const mockedUser = {
+        _id: '606e121e2498b17f07b1410d',
+        email,
+        password: await hashPassword('wrongpassword'),
+      };
 
-    //   jest.spyOn(userModel, 'findOne').mockResolvedValue(mockedUser);
-    //   jest.spyOn(checkPassword, 'userPassword').mockResolvedValue(false);
+      jest.spyOn(userModel, 'findOne').mockResolvedValue(mockedUser);
+      jest.spyOn(checkPassword, 'userPassword').mockResolvedValue(false);
 
-    //   await expect(userService.signin(email, password)).rejects.toThrowError(
-    //     new BadRequestException('Invalid Credentials, Passowrd is not correct'),
-    //   );
+      await expect(userService.signin(email, password)).rejects.toThrowError(
+        new BadRequestException('Invalid Credentials, Passowrd is not correct'),
+      );
 
-    //   expect(userModel.findOne).toBeCalledWith({ email });
-    //   expect(checkPassword).toBeCalledWith(password, mockedUser.password);
-    // });
+      expect(userModel.findOne).toBeCalledWith({ email });
+      expect(checkPassword).toBeCalledWith(password, mockedUser.password);
+    });
   });
 
   describe('findAll', () => {
@@ -181,34 +182,34 @@ describe('UserService', () => {
     });
   });
 
-  // describe('findOne', () => {
-  //   const id = '1';
+  describe('findOne', () => {
+    const id = '1';
 
-  //   it('should return the user with the given id', async () => {
-  //     const user = { id, name: 'Alice' };
-  //     jest
-  //       .spyOn(userModel, 'findById')
-  //       .mockReturnValueOnce(Promise.resolve(user as unknown) as any);
+    it('should return the user with the given id', async () => {
+      const user = { id, name: 'Alice' };
+      jest
+        .spyOn(userModel, 'findById')
+        .mockReturnValueOnce(Promise.resolve(user as unknown) as any);
 
-  //     expect(await userService.findOne(id)).toEqual(user);
-  //   });
+      expect(await userService.findOne(id)).toEqual(user);
+    });
 
-  //   it('should throw a NotFoundException if user is not found', async () => {
-  //     jest
-  //       .spyOn(userModel, 'findById')
-  //       .mockReturnValueOnce(Promise.resolve(null) as any);
+    it('should throw a NotFoundException if user is not found', async () => {
+      jest
+        .spyOn(userModel, 'findById')
+        .mockReturnValueOnce(Promise.resolve(null) as any);
 
-  //     await expect(userService.findOne(id)).rejects.toThrow(NotFoundException);
-  //   });
+      await expect(userService.findOne(id)).rejects.toThrow(NotFoundException);
+    });
 
-  //   it('should throw a BadRequestException if id is invalid', async () => {
-  //     jest.spyOn(userModel, 'findById').mockImplementationOnce(() => {
-  //       throw new Error();
-  //     });
+    it('should throw a BadRequestException if id is invalid', async () => {
+      jest.spyOn(userModel, 'findById').mockImplementationOnce(() => {
+        throw new Error();
+      });
 
-  //     await expect(userService.findOne('invalid-id')).rejects.toThrow(
-  //       BadRequestException,
-  //     );
-  //   });
-  // });
+      await expect(userService.findOne('invalid-id')).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+  });
 });

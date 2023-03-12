@@ -11,7 +11,9 @@ import { GetUser } from 'src/user/decorator/user.decorator';
 import { UserGuard } from 'src/user/guard/user.guard';
 import { UserDocument } from 'src/user/schemas/user.schema';
 import { AccountService } from './account.service';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('account')
 @UseGuards(UserGuard)
 @Controller('account')
 export class AccountController {

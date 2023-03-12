@@ -4,7 +4,9 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UserGuard } from './guard/user.guard';
 import { GetUser } from './decorator/user.decorator';
 import { UserDocument } from './schemas/user.schema';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('user')
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}

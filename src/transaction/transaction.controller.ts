@@ -2,7 +2,9 @@ import { Controller, Get, Post, Body, UseGuards, Query } from '@nestjs/common';
 import { TransactionService } from './transaction.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { UserGuard } from 'src/user/guard/user.guard';
+import { ApiTags } from '@nestjs/swagger';
 
+@ApiTags('transaction')
 @UseGuards(UserGuard)
 @Controller('transaction')
 export class TransactionController {

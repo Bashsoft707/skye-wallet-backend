@@ -90,7 +90,7 @@ export class AccountService {
       return this.accountModel.findByIdAndUpdate(
         id,
         {
-          balance: Number(account.balance) + amount,
+          balance: Number(account.balance) + Number(amount),
         },
         {
           new: true,

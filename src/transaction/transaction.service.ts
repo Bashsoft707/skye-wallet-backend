@@ -26,6 +26,10 @@ export class TransactionService {
         amount,
       });
 
+      if (senderAccount[0].balance < amount) {
+        throw new BadRequestException('Insufficient balance');
+      }
+
       if (transaction) {
         await this.accountService.debit(
           senderAccount[0]._id.toString(),
@@ -39,7 +43,7 @@ export class TransactionService {
 
       return transaction;
     } catch (error) {
-      throw new BadRequestException();
+      throw new BadRequestException(error.message);
     }
   }
 

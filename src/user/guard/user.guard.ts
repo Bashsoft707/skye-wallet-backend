@@ -3,13 +3,11 @@ import {
   ExecutionContext,
   forwardRef,
   Inject,
-  Injectable,
   NotFoundException,
   UnauthorizedException,
 } from '@nestjs/common';
-import { retrieveTokenValue } from 'src/utils/jwt.utils';
+import { retrieveTokenValue } from '../../utils/jwt.utils';
 import { UserService } from '../user.service';
-
 
 export class UserGuard implements CanActivate {
   constructor(

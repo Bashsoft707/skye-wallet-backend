@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { AccountService } from 'src/account/account.service';
+import { AccountService } from '../account/account.service';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { Transaction, TransactionDocument } from './schemas/transaction.schema';
 

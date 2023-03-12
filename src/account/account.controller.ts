@@ -7,9 +7,9 @@ import {
   UseGuards,
   Query,
 } from '@nestjs/common';
-import { GetUser } from 'src/user/decorator/user.decorator';
-import { UserGuard } from 'src/user/guard/user.guard';
-import { UserDocument } from 'src/user/schemas/user.schema';
+import { GetUser } from '../user/decorator/user.decorator';
+import { UserGuard } from '../user/guard/user.guard';
+import { UserDocument } from '../user/schemas/user.schema';
 import { AccountService } from './account.service';
 import { ApiTags } from '@nestjs/swagger';
 
@@ -48,7 +48,4 @@ export class AccountController {
   remove(@Param('id') id: string) {
     return this.accountService.remove(id);
   }
-
-  @Get()
-  search() {}
 }

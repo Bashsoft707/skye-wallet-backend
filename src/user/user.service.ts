@@ -7,9 +7,9 @@ import { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { CreateUserDto } from './dto/create-user.dto';
-import { checkPassword, hashPassword } from 'src/utils/hash-password.utils';
-import { AccountService } from 'src/account/account.service';
-import { signToken } from 'src/utils/jwt.utils';
+import { checkPassword, hashPassword } from '../utils/hash-password.utils';
+import { AccountService } from '../account/account.service';
+import { signToken } from '../utils/jwt.utils';
 
 @Injectable()
 export class UserService {
